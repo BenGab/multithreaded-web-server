@@ -1,10 +1,15 @@
-use std::{fs, io::{BufRead, BufReader, Write}, net::{TcpListener, TcpStream}, thread, time::Duration};
+use std::{fs, io::{BufRead, BufReader, Write}, net::{TcpListener, TcpStream}, thread::{self}, time::Duration};
+
+use web_server::ThreadPool;
 
 fn main() -> std::io::Result<()> {
     let listener = TcpListener::bind("127.0.0.1:7878")?;
-
+    let pool = ThreadPool::new(5);
     for stream in listener.incoming() {
-        handle_connection(stream?)
+        let stream = stream.unwrap();
+        pool.execute(|| {
+            handle_connection(stream)
+        });
     }
 
     Ok(())
