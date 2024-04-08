@@ -2,8 +2,8 @@ use std::{fs, io::{BufRead, BufReader, Write}, net::{TcpListener, TcpStream}, th
 
 use web_server::ThreadPool;
 
-fn main() -> std::io::Result<()> {
-    let listener = TcpListener::bind("127.0.0.1:7878")?;
+fn main() {
+    let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
     let pool = ThreadPool::new(5);
     for stream in listener.incoming() {
         let stream = stream.unwrap();
@@ -12,7 +12,7 @@ fn main() -> std::io::Result<()> {
         });
     }
 
-    Ok(())
+    println!("Shutting down.");
 }
 
 fn handle_connection(mut stream: TcpStream) {
